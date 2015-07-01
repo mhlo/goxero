@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/mrjones/oauth"
+	"crypto/rsa"
 )
 
 const (
@@ -24,6 +25,20 @@ func NewConsumer(consumerKey, consumerSecret string) *XeroConsumer {
 	x.Consumer = oauth.NewConsumer(
 		consumerKey,
 		consumerSecret,
+		oauth.ServiceProvider{
+			RequestTokenUrl:   XeroRequestTokenURL,
+			AuthorizeTokenUrl: XeroAuthorizeTokenURL,
+			AccessTokenUrl:    XeroAccessTokenURL,
+		})
+	return &x
+}
+
+func NewPrivateConsumer(consumerKey string, rsaKey *rsa.PrivateKey) *XeroConsumer {
+
+	x := XeroConsumer{}
+	x.Consumer = oauth.NewRSAConsumer(
+		consumerKey,
+		rsaKey,
 		oauth.ServiceProvider{
 			RequestTokenUrl:   XeroRequestTokenURL,
 			AuthorizeTokenUrl: XeroAuthorizeTokenURL,
